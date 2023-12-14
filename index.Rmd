@@ -1,5 +1,5 @@
 ---
-title: "Session"
+title: "Session 7"
 subtitle: "More Rmarkdown"  
 output:
   xaringan::moon_reader:
