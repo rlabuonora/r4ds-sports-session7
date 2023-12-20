@@ -19,8 +19,12 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # Session 7
+]
+.subtitle[
 ## More Rmarkdown
+]
 
 ---
 
@@ -177,8 +181,8 @@ exclude: false
 DT::datatable(head(mtcars), fillContainer = FALSE, options = list(pageLength = 4))
 ```
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-0273ac69d218db11df24" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0273ac69d218db11df24">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["Mazda RX4","Mazda RX4 Wag","Datsun 710","Hornet 4 Drive","Hornet Sportabout","Valiant"],[21,21,22.8,21.4,18.7,18.1],[6,6,4,6,8,6],[160,160,108,258,360,225],[110,110,93,110,175,105],[3.9,3.9,3.85,3.08,3.15,2.76],[2.62,2.875,2.32,3.215,3.44,3.46],[16.46,17.02,18.61,19.44,17.02,20.22],[0,0,1,1,0,1],[1,1,1,0,0,0],[4,4,4,3,3,3],[4,4,1,1,2,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>mpg<\/th>\n      <th>cyl<\/th>\n      <th>disp<\/th>\n      <th>hp<\/th>\n      <th>drat<\/th>\n      <th>wt<\/th>\n      <th>qsec<\/th>\n      <th>vs<\/th>\n      <th>am<\/th>\n      <th>gear<\/th>\n      <th>carb<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":4,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[4,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-550269c3280332081e64" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-550269c3280332081e64">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["Mazda RX4","Mazda RX4 Wag","Datsun 710","Hornet 4 Drive","Hornet Sportabout","Valiant"],[21,21,22.8,21.4,18.7,18.1],[6,6,4,6,8,6],[160,160,108,258,360,225],[110,110,93,110,175,105],[3.9,3.9,3.85,3.08,3.15,2.76],[2.62,2.875,2.32,3.215,3.44,3.46],[16.46,17.02,18.61,19.44,17.02,20.22],[0,0,1,1,0,1],[1,1,1,0,0,0],[4,4,4,3,3,3],[4,4,1,1,2,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>mpg<\/th>\n      <th>cyl<\/th>\n      <th>disp<\/th>\n      <th>hp<\/th>\n      <th>drat<\/th>\n      <th>wt<\/th>\n      <th>qsec<\/th>\n      <th>vs<\/th>\n      <th>am<\/th>\n      <th>gear<\/th>\n      <th>carb<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":4,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[4,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 
@@ -263,10 +267,216 @@ DT::datatable(head(mtcars), fillContainer = FALSE, options = list(pageLength = 4
 
 ---
 # Images
-```![img](heart_rate_runs.png)```
----
 
 ![img](heart_rate_runs.png)
+---
+
+## Data Visualization
+
+- ggplot is great for fast exploratory plots.
+- It has great tools for creating plots for communicating your results.
+- In this scenario, the emphasis should be on the __story__ you are trying to tell.
+
+---
+## Themes
+
+- Branding [example from the BBC](https://bbc.github.io/rcookbook/#make_a_line_chart)
+
+
+---
+## Default theme
+
+- Is called theme_grey()
+
+
+
+
+```r
+ggplot(diff_df, aes(x = pts_diff, y = win_pct)) +
+  geom_point() + 
+  theme_grey()
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
+
+- Grey panel background
+- white grid lines
+
+---
+## GGthemes
+
+- package with some well known themes:
+  - theme_fivethirtyeight()
+  - theme_economist()
+  
+---
+## Theme elements
+
+- theme elements can be lines, text, etc.
+- To specify an option, you use the corresponding element.
+
+---
+## Centering titles and subtitles
+
+- When styling text, use element_text.
+
+
+```r
+theme(
+  plot.title=element_text(hjust=.5)
+)
+```
+
+
+---
+## Grids
+
+- When styling lines, use element_line
+
+
+```r
+theme(
+  panel.grid.major=element_line(color="red")
+)
+```
+
+
+---
+## Labels
+
+```r
+plot &lt;- nfl_stand %&gt;% 
+  mutate(
+    color = case_when(
+      season &lt; 2020 &amp; seed &lt;= 6 ~ "blue",
+      season == 2020 &amp; seed &lt;= 7 ~ "blue",
+      TRUE ~  "red"
+    )
+  ) %&gt;% 
+  ggplot(aes(x = as.numeric(pts_diff), y = win_pct)) +
+  geom_vline(xintercept = 0, size = 0.75, color = "#737373") +
+  geom_point(
+    aes(color = color),
+    size = 3, alpha = 0.8
+    ) +
+  scale_color_identity() +
+  labs(x = "Points Differential", y = "Win Percent",
+       title = "Playoff teams typically have a positive point differential",
+       subtitle = "Data through week 15 of the 2020 NFL Season",
+       caption = "Plot: @thomas_mock | Data: ESPN")
+```
+
+---
+
+```r
+plot
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
+
+---
+
+## Scales
+
+
+```r
+plt_scales &lt;- nfl_stand %&gt;% 
+  mutate(
+    color = case_when(
+      season &lt; 2020 &amp; seed &lt;= 6 ~ "blue",
+      season == 2020 &amp; seed &lt;= 7 ~ "blue",
+      TRUE ~  "red"
+    )
+  ) %&gt;% 
+  ggplot(aes(x = as.numeric(pts_diff), y = win_pct)) +
+  geom_vline(xintercept = 0, size = 0.75, color = "#737373") +
+  geom_point(aes(color=color)) + 
+  scale_color_identity()+
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    breaks = seq(.0, 1, by = .10)
+    ) +
+  scale_x_continuous(
+    breaks = seq(-200, 250, by = 50)
+  ) +
+  labs(x = "Points Differential", y = "Win Percent",
+       title = "Playoff teams typically have a positive point differential",
+       subtitle = "Data through week 15 of the 2020 NFL Season",
+       caption = "Plot: @thomas_mock | Data: ESPN")
+```
+
+---
+
+
+```r
+plt_scales
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
+
+
+---
+## Experiment with themes
+
+
+```r
+plot + ggthemes::theme_economist()
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+
+
+## Final plot
+
+```r
+library(ggtext)
+
+playoff_label_scatter &lt;- tibble(
+  pts_diff = c(25,-125), y = c(0.3, 0.8), 
+  label = c("Missed&lt;br&gt;Playoffs", "Made&lt;br&gt;Playoffs"),
+  color = c("#D50A0A", "#013369")
+)
+
+
+playoff_diff_plot &lt;- nfl_stand %&gt;% 
+  mutate(
+    pts_diff=as.numeric(pts_diff),
+    color = case_when(
+      season &lt; 2020 &amp; seed &lt;= 6 ~ "#013369",
+      season == 2020 &amp; seed &lt;= 7 ~ "#013369",
+      TRUE ~  "#D50A0A"
+    )
+  ) %&gt;% 
+  ggplot(aes(x = pts_diff, y = win_pct)) +
+  geom_vline(xintercept = 0, size = 0.75, color = "#737373") +
+  geom_hline(yintercept = 0, size = 0.75, color = "#737373") +
+  geom_point(
+    aes(color = color),
+    size = 3, alpha = 0.8
+    ) +
+  # ggtext::geom_richtext(
+  #   data = playoff_label_scatter,
+  #   aes(x = pts_diff, y = y, label = label, color = color),
+  #   fill = "#f0f0f0", label.color = NA, # remove background and outline
+  #   label.padding = grid::unit(rep(0, 4), "pt"), # remove padding
+  #   family = "Chivo", hjust = 0.1, fontface = "bold",
+  #   size = 8
+  # ) +
+  scale_color_identity() +
+  labs(x = "Points Differential", y = "Win Percent",
+       title = "Playoff teams typically have a positive point differential",
+       subtitle = "Data through week 15 of the 2020 NFL Season",
+       caption = str_to_upper("Plot: @thomas_mock | Data: ESPN")) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    breaks = seq(.0, 1, by = .10)
+    ) +
+  scale_x_continuous(
+    breaks = seq(-200, 250, by = 50)
+  ) + 
+  theme(plot.subtitle=element_text(hjust=.5))
+```
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -316,6 +526,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
